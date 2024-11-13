@@ -14,26 +14,6 @@ import sun.misc.Signal;
  */
 public class Main {
 
-	//TODO: readme
-	
-	//HECHOS
-	// Vehiculos
-	// Galpon con barrera
-	// Puente de una vía
-	// Sincro de Vehiculo y Ciudad con synchronized
-	// mercadería de double a int
-	// descarga de mercaderia
-	// usar el Puente de una vía
-	// Puntos de ruta, que incluya ruta1, puente y galpon
-	// Agregar el Puente de dos vías
-	// Ruta de vuelta
-	// Otra ruta con el Puente de doble vía
-	// Selector de ruta
-	// Comentarios usando el enunciado del TP
-	// Limpiador del Puente
-	// atajar SIGNAL
-	
-	
 	//Indica si se recibió un signal
 	public static final AtomicBoolean signalReceived = new AtomicBoolean(false);		
 
