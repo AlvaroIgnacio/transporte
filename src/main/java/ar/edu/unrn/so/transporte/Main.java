@@ -3,6 +3,8 @@ package ar.edu.unrn.so.transporte;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import sun.misc.Signal;
+
 /**
  * Sistemas Operativos 2024
  * Reentrega Trabajo entregable 3
@@ -12,10 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class Main {
 
-	//TODO: Limpiador del Puente
-	//TODO: atajar SIGNAL
 	//TODO: readme
-	
 	
 	//HECHOS
 	// Vehiculos
@@ -31,12 +30,13 @@ public class Main {
 	// Otra ruta con el Puente de doble vía
 	// Selector de ruta
 	// Comentarios usando el enunciado del TP
+	// Limpiador del Puente
+	// atajar SIGNAL
 	
 	
 	//Indica si se recibió un signal
 	public static final AtomicBoolean signalReceived = new AtomicBoolean(false);		
 
-	//TODO: cambiar el numero de vehículos
     private static final int NUM_VEHICULOS = 15;
     
     private static final Vehiculo[] vehiculos = new Vehiculo[NUM_VEHICULOS*2];
@@ -50,29 +50,28 @@ public class Main {
     private static final CiudadImpar ciudad7 = new CiudadImpar("C7");
     private static final CiudadPar ciudad8 = new CiudadPar("C8");
     
-    /*
-     * Para poder ingresar al galpón G1, debe de hacerse de a tres (3) vehículos juntos. 
-     * Para el galpón G2, debe hacerse de a cinco (5) vehículos juntos.
-     */
+    // Para poder ingresar al galpón G1, debe de hacerse de a tres (3) vehículos juntos. 
     private static final Galpon galpon1 = new Galpon("G1", 3, false);
-    //TODO: CAMBIAR NUMERO A 5
-    private static final Galpon galpon2 = new Galpon("G2", 3, true);
+    // Para el galpón G2, debe hacerse de a cinco (5) vehículos juntos.
+    private static final Galpon galpon2 = new Galpon("G2", 5, true);
     
     // En la ciudad existen dos (2) puentes (P1 y P2), los mismos no son iguales.
     private static final Puente puente1 = new Puente("P1");
     private static final PuenteDosManos puente2 = new PuenteDosManos("P2");
 
-    private static final Limpiador limpiador = new Limpiador(puente1, puente1);
+    private static final Limpiador limpiador = new Limpiador(puente1, puente2);
     
     public static void main(String[] args) throws InterruptedException {
 
+    	// Manejador del signal TERM
+    	Signal.handle(new Signal("TERM"), new Handler());    	
+    	
     	// El sistema de transporte, cuenta con dos (2) rutas (R1 y R2).
     	// Para que un vehículo recorra la R1, debe atravesar C1, C2, P1, C3 y C4;
         var ruta1 = Arrays.asList(ciudad1, ciudad2, puente1, ciudad3, ciudad4);
         // Para que un vehículo recorra la R2, debe atravezar C8, C7, P2, C6 y C5;
         var ruta2 = Arrays.asList(ciudad8, ciudad7, puente2, ciudad6, ciudad5);
         
-        //TODO: mejora: lanzador de vehículos
         for (int i = 0; i < NUM_VEHICULOS; i++) {
             vehiculos[i] = new Vehiculo(i + 1, ruta1, ruta2, galpon1, galpon2, true);
             // Iniciar el hilo (se debe modelar a los vehículos como hilos)
@@ -95,7 +94,6 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        // Esperar que todos los vehículos terminen su recorrido
         for (int i = NUM_VEHICULOS; i < NUM_VEHICULOS * 2; i++) {
             try {
                 vehiculos[i].join();
@@ -103,12 +101,19 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        limpiador.makeStop();
+        System.out.println("Todos llegaron al galpón de destino.");
         
-        System.out.println("Todos llegaron");
+        // Al recibir la señal TERM, debe terminar. Para terminar, debe esperar a que
+        // todos los vehículos lleguen e ingresen al galpón de destino.
+        if(signalReceived.get()) {
+        	System.exit(0);
+        }            
+        
+        // Detener al limpiador de puentes
+        limpiador.detener();
+
         Thread.sleep(5000);
         
-        //TODO: refactor
         for(PuntoRuta ciudad: ruta1) {
         	if (ciudad.mercaderiaRecibida()>0)
         		System.out.println(ciudad.nombre() + " recibió: " + ciudad.mercaderiaRecibida());
@@ -118,7 +123,6 @@ public class Main {
         		System.out.println("La ciudad " + ciudad.nombre() + " recibió: " + ciudad.mercaderiaRecibida());
         }
         
-        //TODO: galpon1 es quien entrega la mercadería. Modelar con cambios en Vehículo
         System.out.println("Entregada por G1: " + galpon1.mercaderiaEntregada());
         System.out.println("Entregada por G2: " + galpon2.mercaderiaEntregada());
         
