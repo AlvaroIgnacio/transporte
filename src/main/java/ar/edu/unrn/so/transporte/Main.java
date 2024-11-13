@@ -37,7 +37,7 @@ public class Main {
 	public static final AtomicBoolean signalReceived = new AtomicBoolean(false);		
 
 	//TODO: cambiar el numero de vehículos
-    private static final int NUM_VEHICULOS = 3;
+    private static final int NUM_VEHICULOS = 15;
     
     private static final Vehiculo[] vehiculos = new Vehiculo[NUM_VEHICULOS*2];
   
@@ -62,6 +62,8 @@ public class Main {
     private static final Puente puente1 = new Puente("P1");
     private static final PuenteDosManos puente2 = new PuenteDosManos("P2");
 
+    private static final Limpiador limpiador = new Limpiador(puente1, puente1);
+    
     public static void main(String[] args) throws InterruptedException {
 
     	// El sistema de transporte, cuenta con dos (2) rutas (R1 y R2).
@@ -83,6 +85,8 @@ public class Main {
             vehiculos[i].start();  
         }
         
+        limpiador.start();
+        
         // Esperar que todos los vehículos terminen su recorrido
         for (int i = 0; i < NUM_VEHICULOS; i++) {
             try {
@@ -99,8 +103,10 @@ public class Main {
                 e.printStackTrace();
             }
         }
+        limpiador.makeStop();
         
         System.out.println("Todos llegaron");
+        Thread.sleep(5000);
         
         //TODO: refactor
         for(PuntoRuta ciudad: ruta1) {
