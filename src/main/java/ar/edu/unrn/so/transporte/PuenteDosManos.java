@@ -1,5 +1,11 @@
 package ar.edu.unrn.so.transporte;
 
+/**
+ * Sistemas Operativos 2024
+ * Sistema de transporte (ejercicio 3.4)
+ * Puente de dos carriles
+ * @author Álvaro Bayón
+ */
 public class PuenteDosManos extends PuntoRuta {
 	private boolean cruzandoAlOeste = false;
 	private boolean cruzandoAlEste = false;
@@ -10,6 +16,10 @@ public class PuenteDosManos extends PuntoRuta {
 		super(nombre);
 	}
 
+	/*
+	Tiene dos carriles, por lo que solo un vehículo puede cruzar en un
+	sentido, en un momento dado.	 
+	*/
 	public void cruzarAlEste(Vehiculo vehiculo) throws InterruptedException {
 		synchronized (lock) {
 			while (!estaLimpio || cruzandoAlEste) {
@@ -24,7 +34,9 @@ public class PuenteDosManos extends PuntoRuta {
 			}
 			cruzandoAlEste = true;
 			System.out.println(vehiculo.nombre() + " cruzando en dirección Este el puente " + this.nombre());
+			Thread.sleep(500);
 			cruzandoAlEste = false;
+			System.out.println(vehiculo.nombre() + " cruzó el puente " + this.nombre());
 			// Avisa a los vehículos que esperan
 			lock.notifyAll();
 		}
@@ -44,7 +56,9 @@ public class PuenteDosManos extends PuntoRuta {
 			}
 			cruzandoAlOeste = true;
 			System.out.println(vehiculo.nombre() + " cruzando en dirección Oeste el puente " + this.nombre());
+			Thread.sleep(500);
 			cruzandoAlOeste = false;
+			System.out.println(vehiculo.nombre() + " cruzó el puente " + this.nombre());
 			// Avisa a los vehículos que esperan
 			lock.notifyAll();
 		}
