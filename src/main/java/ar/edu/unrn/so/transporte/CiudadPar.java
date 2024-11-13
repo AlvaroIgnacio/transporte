@@ -2,6 +2,12 @@ package ar.edu.unrn.so.transporte;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Sistemas Operativos 2024
+ * Sistema de transporte (ejercicio 3.4)
+ * Ciudad con descarga simultánea de mercaderías
+ * @author Álvaro Bayón
+ */
 class CiudadPar extends Ciudad {
 	private AtomicInteger mercaderiaRecibida = new AtomicInteger(0);
 

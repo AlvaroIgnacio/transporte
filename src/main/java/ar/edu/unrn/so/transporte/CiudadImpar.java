@@ -1,5 +1,11 @@
 package ar.edu.unrn.so.transporte;
 
+/**
+ * Sistemas Operativos 2024
+ * Sistema de transporte (ejercicio 3.4)
+ * Ciudad con descarga de acceso exclusivo
+ * @author Álvaro Bayón
+ */
 class CiudadImpar extends Ciudad {
 
     private int mercaderiaRecibida = 0;

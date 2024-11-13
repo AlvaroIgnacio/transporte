@@ -3,7 +3,12 @@ package ar.edu.unrn.so.transporte;
 import java.util.Random;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
-
+/**
+ * Sistemas Operativos 2024
+ * Sistema de transporte (ejercicio 3.4)
+ * Galpón de carga y descarga de vehículos
+ * @author Álvaro Bayón 
+ */
 public class Galpon {
 
     private final CyclicBarrier barrier; // La barrera de sincronización

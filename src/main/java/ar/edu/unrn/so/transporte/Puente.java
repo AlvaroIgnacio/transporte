@@ -1,10 +1,9 @@
 package ar.edu.unrn.so.transporte;
 
 /**
- * El puente que se encuentra en el norte de la ciudad (P1), tiene un solo
- * carril, por lo que solo un vehículo puede cruzar por el en un momento dado,
- * sin importar el sentido.
- * 
+ * Sistemas Operativos 2024
+ * Sistema de transporte (ejercicio 3.4)
+ * Puente de una vía
  * @author Álvaro Bayón
  */
 public class Puente extends PuntoRuta {
@@ -15,6 +14,11 @@ public class Puente extends PuntoRuta {
 		super(nombre);
 	}
 
+	/*
+	 * El puente que se encuentra en el norte de la ciudad (P1), tiene un solo
+	 * carril, por lo que solo un vehículo puede cruzar por el en un momento dado,
+	 * sin importar el sentido.
+	 */
 	public void cruzar(Vehiculo vehiculo) throws InterruptedException {
 		synchronized (monitor) {
 			// Si el puente está siendo limpiado, los vehículos esperan

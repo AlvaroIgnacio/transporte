@@ -4,6 +4,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 
+/**
+ * Sistemas Operativos 2024
+ * Sistema de transporte (ejercicio 3.4)
+ * Vehículo para el transporte de mercaderías
+ * @author Álvaro Bayón
+ */
 public class Vehiculo extends Thread {
     private String nombre;
     private List<PuntoRuta> recorrido1;
