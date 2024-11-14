@@ -23,7 +23,8 @@ class CiudadImpar extends Ciudad {
     public synchronized void descargar(Vehiculo vehiculo) {
         int cantidadDescargada = vehiculo.descargar();
         mercaderiaRecibida += cantidadDescargada;
-        System.out.println("El vehículo " + vehiculo.nombre() + " descargó " + cantidadDescargada);
+        System.out.println("El vehículo " + vehiculo.nombre() + " descargó " + cantidadDescargada 
+        		+ " unidades en " + this.nombre());
     }
 	
     public int mercaderiaRecibida() {
