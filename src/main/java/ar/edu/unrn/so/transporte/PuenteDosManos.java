@@ -9,8 +9,11 @@ package ar.edu.unrn.so.transporte;
 public class PuenteDosManos extends PuntoRuta {
 	private boolean cruzandoAlOeste = false;
 	private boolean cruzandoAlEste = false;
-	private boolean estaLimpio = true; // Estado de limpieza del puente
-	private final Object lock = new Object(); // Objeto de sincronización para el acceso al puente
+	// Sincronización para el acceso al puente
+	private final Object lockAlOeste = new Object(); 
+	private final Object lockAlEste = new Object(); 
+	// Estado de limpieza del puente
+	private boolean estaLimpio = true; 
 
 	public PuenteDosManos(String nombre) {
 		super(nombre);
@@ -21,7 +24,7 @@ public class PuenteDosManos extends PuntoRuta {
 	sentido, en un momento dado.	 
 	*/
 	public void cruzarAlEste(Vehiculo vehiculo) throws InterruptedException {
-		synchronized (lock) {
+		synchronized (lockAlEste) {
 			while (!estaLimpio || cruzandoAlEste) {
 				if (!estaLimpio) {
 					System.out.println(vehiculo.nombre() + " está esperando, el puente " + this.nombre()
@@ -30,20 +33,20 @@ public class PuenteDosManos extends PuntoRuta {
 					System.out.println(
 							vehiculo.nombre() + " esperando para cruzar en dirección Este el puente " + this.nombre());
 				}
-				lock.wait(); // Espera si el puente está en limpieza o si ya hay un vehículo cruzando en B
+				lockAlEste.wait(); // Espera si el puente está en limpieza o si ya hay un vehículo cruzando en B
 			}
 			cruzandoAlEste = true;
 			System.out.println(vehiculo.nombre() + " cruzando en dirección Este el puente " + this.nombre());
 			Thread.sleep(500);
 			cruzandoAlEste = false;
-			System.out.println(vehiculo.nombre() + " cruzó el puente " + this.nombre());
+			System.out.println(vehiculo.nombre() + " cruzó el puente " + this.nombre() + " hacia el Este.");
 			// Avisa a los vehículos que esperan
-			lock.notifyAll();
+			lockAlEste.notifyAll();
 		}
 	}
 
 	public void cruzarAlOeste(Vehiculo vehiculo) throws InterruptedException {
-		synchronized (lock) {
+		synchronized (lockAlOeste) {
 			while (!estaLimpio || cruzandoAlOeste) {
 				if (!estaLimpio) {
 					System.out.println(vehiculo.nombre() + " está esperando, el puente " + this.nombre()
@@ -52,31 +55,38 @@ public class PuenteDosManos extends PuntoRuta {
 					System.out.println(
 							vehiculo.nombre() + " esperando para cruzar en dirección Oeste el puente " + this.nombre());
 				}
-				lock.wait(); // Espera si el puente está en limpieza o si ya hay un vehículo cruzando en A
+				lockAlOeste.wait(); // Espera si el puente está en limpieza o si ya hay un vehículo cruzando en A
 			}
 			cruzandoAlOeste = true;
 			System.out.println(vehiculo.nombre() + " cruzando en dirección Oeste el puente " + this.nombre());
 			Thread.sleep(500);
 			cruzandoAlOeste = false;
-			System.out.println(vehiculo.nombre() + " cruzó el puente " + this.nombre());
+			System.out.println(vehiculo.nombre() + " cruzó el puente " + this.nombre() + " hacia el Oeste.");
 			// Avisa a los vehículos que esperan
-			lock.notifyAll();
+			lockAlOeste.notifyAll();
 		}
 	}
 
 	public void iniciarLimpieza() {
+		// De esta forma evito race conditions entre el limpiador y los vehículos		
 		synchronized (this) {
-			estaLimpio = false; // El puente está siendo limpiado, los vehículos no pueden pasar
+			estaLimpio = false; 
 			System.out.println("El puente " + this.nombre() + " está siendo limpiado.");
-			// lock.notifyAll(); // Notifica a los vehículos que deben esperar
 		}
 	}
 
 	public void terminarLimpieza() {
-		synchronized (lock) {
-			estaLimpio = true; // El puente ha sido limpiado y está habilitado para los vehículos
+		synchronized (this) {
+			estaLimpio = true; 
 			System.out.println("Terminada la limpieza del puente " + this.nombre());
-			lock.notifyAll(); // Despierta a los vehículos que esperan
+		}
+		synchronized (lockAlEste) {
+			// Habilita el paso al este
+			lockAlEste.notifyAll();
+		}
+		synchronized (lockAlOeste) {
+			// Habilita el paso al Oeste
+			lockAlOeste.notifyAll(); 
 		}
 	}
 
