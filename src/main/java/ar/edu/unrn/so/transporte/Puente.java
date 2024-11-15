@@ -37,8 +37,7 @@ public class Puente extends PuntoRuta {
 	}
 
 	public void iniciarLimpieza() {
-		// Ningún hilo, sea vehículo o limpiador, puede cambiar cambiar el estado.
-		// Evito race conditions entre el limpiador y los vehículos
+		// De esta forma evito race conditions entre el limpiador y los vehículos
 		synchronized (this) {
 			// Bloqueamos el acceso a los vehículos
 			estaLimpio = false;

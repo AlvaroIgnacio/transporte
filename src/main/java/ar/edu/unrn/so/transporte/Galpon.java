@@ -11,8 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Galpon {
 
-    private final CyclicBarrier barrier; // La barrera de sincronización
+	// Barrera para el ingreso grupal de camiones al galpón 
+    private final CyclicBarrier barrier; 
     private final String nombre;
+    // Recurso crítico para contar la cantidad de mercadería entregada
+    // y así poder comparar mercadería entregada vs recibida en cada ciudad
+    // Eso es para depurar. No forma parte del enunciado.
     private AtomicInteger mercaderiaEntregada = new AtomicInteger(0);
     private final boolean este;
 
@@ -20,6 +24,8 @@ public class Galpon {
     public Galpon(String nombre, int grupoSize, boolean este) {
     	this.nombre = nombre;
     	this.este = este;
+    	
+    	// Barrera para el ingreso de {n=grupoSize} camiones al galpón
         this.barrier = new CyclicBarrier(grupoSize, new Runnable() {
             @Override
             public void run() {
@@ -51,14 +57,17 @@ public class Galpon {
         }
     }
     
+    // Cada vehículo carga en el galpón donde se encuentra, una cantidad aleatoria de mercancias.
     public int cargarMercaderia() {
         Random rand = new Random();
         // Mercancía aleatoria entre 50 y 150
         int mercaderia = rand.nextInt(101) + 50;
+        // Se actualiza atomicamente
         mercaderiaEntregada.addAndGet(mercaderia);
         return mercaderia;  
     }
     
+    // Esto es para depurar. No forma parte del enunciado.
     public int mercaderiaEntregada() {
     	return mercaderiaEntregada.get();
     }

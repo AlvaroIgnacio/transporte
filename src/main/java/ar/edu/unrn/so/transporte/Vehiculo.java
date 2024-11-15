@@ -26,7 +26,6 @@ public class Vehiculo extends Thread {
         this.recorrido2 = recorrido2;
         this.origen = origen;
         this.destino = destino;
-        //this.este = este;
         this.sentidoEste = !origen.zonaEste();
     }
 
@@ -38,7 +37,7 @@ public class Vehiculo extends Thread {
     	return this.sentidoEste;
     }
     
-	//El vehículo, en su recorrido, va descargando el 25% de las mercancias, por cada ciudad que pasa en su recorrido.
+	//El vehículo, en su recorrido, va descargando el 25% de las mercancias, por cada ciudad en su recorrido.
     public int descargar() {
     	int cantidadDescargada = mercaderia;
 
@@ -52,6 +51,7 @@ public class Vehiculo extends Thread {
     	return cantidadDescargada;
     }
 
+    // Cada vehículo carga en el galpón donde se encuentra, una cantidad aleatoria de mercancias.
     private void cargarMercaderia() {
     	this.mercaderia = origen.cargarMercaderia();
     	// Determino la cantidad de mercadería a descargar en cada punto
