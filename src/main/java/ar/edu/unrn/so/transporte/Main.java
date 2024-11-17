@@ -36,8 +36,8 @@ public class Main {
     private static final Galpon galpon2 = new Galpon("G2", 5, true);
     
     // En la ciudad existen dos (2) puentes (P1 y P2), los mismos no son iguales.
-    private static final Puente puente1 = new Puente("P1");
-    private static final PuenteDosManos puente2 = new PuenteDosManos("P2");
+    private static final Puente puente1 = new PuenteManoUnica("P1");
+    private static final Puente puente2 = new PuenteDosManos("P2");
 
     private static final Limpiador limpiador = new Limpiador(puente1, puente2);
     
