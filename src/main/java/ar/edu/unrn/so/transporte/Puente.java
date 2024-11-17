@@ -1,43 +1,24 @@
 package ar.edu.unrn.so.transporte;
-
 /**
  * Sistemas Operativos 2024
  * Sistema de transporte (ejercicio 3.4)
- * Puente de una vía
+ * Puente abstracto
  * @author Álvaro Bayón
  */
-public class Puente extends PuntoRuta {
-	private boolean estaLimpio = true;
-	private final Object monitor = new Object();
+public abstract class Puente extends PuntoRuta {
 
+	boolean estaLimpio = true;
+	
 	public Puente(String nombre) {
 		super(nombre);
 	}
 
-	/*
-	 * El puente que se encuentra en el norte de la ciudad (P1), tiene un solo
-	 * carril, por lo que solo un vehículo puede cruzar por el en un momento dado,
-	 * sin importar el sentido.
-	 */
-	public void cruzar(Vehiculo vehiculo) throws InterruptedException {
-		synchronized (monitor) {
-			// Si el puente está siendo limpiado, los vehículos esperan
-			while (!estaLimpio) {
-				System.out.println(
-						vehiculo.nombre() + " está esperando, el puente " + this.nombre() + " está siendo limpiado.");
-				monitor.wait();
-			}
+	public abstract void cruzar(Vehiculo vehiculo) throws InterruptedException;
 
-			// El vehículo puede cruzar el puente
-			System.out.println(vehiculo.nombre() + " está cruzando el puente " + this.nombre());
-			// Tiempo en que tarda cruzar el puente
-			Thread.sleep(500);
-			System.out.println(vehiculo.nombre() + " cruzó el puente " + this.nombre());
-		}
-	}
-
+	// Inicia el proceso de limpieza indicando que el puente no está limpio
+	// para bloquear el acceso a los vehículos
 	public void iniciarLimpieza() {
-		// De esta forma evito race conditions entre el limpiador y los vehículos
+		// El limpiador no debe esperar en la misma cola que los vehículos.
 		synchronized (this) {
 			// Bloqueamos el acceso a los vehículos
 			estaLimpio = false;
@@ -45,16 +26,8 @@ public class Puente extends PuntoRuta {
 		}
 	}
 
-	public void terminarLimpieza() {
-		synchronized (monitor) {
-			estaLimpio = true;
-			System.out.println("Terminada la limpieza del puente " + this.nombre());
-			// Avisamos a los vehículos que pueden cruzar el puente
-			monitor.notifyAll();
-		}
-	}
+	public abstract void terminarLimpieza();
 
-	@Override
 	public void ingresar(Vehiculo vehiculo) {
 		try {
 			this.cruzar(vehiculo);
@@ -64,8 +37,7 @@ public class Puente extends PuntoRuta {
 		}
 	}
 
-	@Override
 	protected int mercaderiaRecibida() {
 		return 0;
-	}
+	}	
 }
