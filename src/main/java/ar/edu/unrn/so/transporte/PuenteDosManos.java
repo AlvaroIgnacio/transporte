@@ -6,17 +6,23 @@ package ar.edu.unrn.so.transporte;
  * Puente de dos carriles
  * @author Álvaro Bayón
  */
-public class PuenteDosManos extends PuntoRuta {
+public class PuenteDosManos extends Puente {
 	private boolean cruzandoAlOeste = false;
 	private boolean cruzandoAlEste = false;
 	// Sincronización para el acceso al puente
 	private final Object lockAlOeste = new Object(); 
 	private final Object lockAlEste = new Object(); 
-	// Estado de limpieza del puente
-	private boolean estaLimpio = true; 
 
 	public PuenteDosManos(String nombre) {
 		super(nombre);
+	}
+
+	public void cruzar(Vehiculo vehiculo) throws InterruptedException {
+		if (vehiculo.haciaEste()) {
+			this.cruzarAlEste(vehiculo);
+		} else {
+			this.cruzarAlOeste(vehiculo);
+		}
 	}
 
 	/*
@@ -33,7 +39,8 @@ public class PuenteDosManos extends PuntoRuta {
 					System.out.println(
 							vehiculo.nombre() + " esperando para cruzar en dirección Este el puente " + this.nombre());
 				}
-				lockAlEste.wait(); // Espera si el puente está en limpieza o si ya hay un vehículo cruzando en B
+				// Espera si el puente está en limpieza o si ya hay un vehículo cruzando en B
+				lockAlEste.wait(); 
 			}
 			cruzandoAlEste = true;
 			System.out.println(vehiculo.nombre() + " cruzando en dirección Este el puente " + this.nombre());
@@ -67,14 +74,6 @@ public class PuenteDosManos extends PuntoRuta {
 		}
 	}
 
-	public void iniciarLimpieza() {
-		// De esta forma evito race conditions entre el limpiador y los vehículos		
-		synchronized (this) {
-			estaLimpio = false; 
-			System.out.println("El puente " + this.nombre() + " está siendo limpiado.");
-		}
-	}
-
 	public void terminarLimpieza() {
 		synchronized (this) {
 			estaLimpio = true; 
@@ -88,29 +87,6 @@ public class PuenteDosManos extends PuntoRuta {
 			// Habilita el paso al Oeste
 			lockAlOeste.notifyAll(); 
 		}
-	}
-
-	@Override
-	public void ingresar(Vehiculo vehiculo) {
-		this.cruzar(vehiculo);
-	}
-
-	public void cruzar(Vehiculo vehiculo) {
-		try {
-			if (vehiculo.haciaEste()) {
-				this.cruzarAlEste(vehiculo);
-			} else {
-				this.cruzarAlOeste(vehiculo);
-			}
-		} catch (InterruptedException e) {
-			System.out.println("Error: no es posible cruzar el puente.");
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	protected int mercaderiaRecibida() {
-		return 0;
 	}
 
 }
