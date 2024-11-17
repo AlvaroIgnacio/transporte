@@ -14,17 +14,22 @@ class CiudadImpar extends Ciudad {
 		super(nombre);
 	}
 
-	/*
-		Para poder descargar la mercancia en una ciudad con número impar, el vehículo debe hacerlo
-		de forma exclusiva. O sea, solo un vehículo puede descargar la mercancia en un momento
-		dado.
-	 */
 	@Override
-    public synchronized void descargar(Vehiculo vehiculo) {
+    public void descargar(Vehiculo vehiculo) {
         int cantidadDescargada = vehiculo.descargar();
         mercaderiaRecibida += cantidadDescargada;
         System.out.println("El vehículo " + vehiculo.nombre() + " descargó " + cantidadDescargada 
         		+ " unidades en " + this.nombre());
+    }
+	
+	/*
+	Para poder descargar la mercancia en una ciudad con número impar, el vehículo debe hacerlo
+	de forma exclusiva. O sea, solo un vehículo puede descargar la mercancia en un momento
+	dado.
+	*/
+    @Override
+    public synchronized void ingresar(Vehiculo vehiculo) {
+    	this.descargar(vehiculo);
     }
 	
     public int mercaderiaRecibida() {
