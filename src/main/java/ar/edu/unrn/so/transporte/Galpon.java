@@ -51,7 +51,7 @@ public class Galpon {
             System.out.println(vehiculo.nombre() + " está esperando para formar un grupo en " + this.nombre);
             // El vehículo espera a que los otros miembros del grupo lleguen (3 o 5 dependiendo del galpón)
             barrier.await();  
-            System.out.println(vehiculo.nombre() + " ha llegado a " + this.nombre);
+            System.out.println(vehiculo.nombre() + " llegó a " + this.nombre);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +67,7 @@ public class Galpon {
         return mercaderia;  
     }
     
-    // Esto es para depurar. No forma parte del enunciado.
+    // Para depurar. No forma parte del enunciado.
     public int mercaderiaEntregada() {
     	return mercaderiaEntregada.get();
     }

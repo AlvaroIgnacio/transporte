@@ -32,6 +32,7 @@ class CiudadImpar extends Ciudad {
     	this.descargar(vehiculo);
     }
 	
+    @Override
     public int mercaderiaRecibida() {
     	return mercaderiaRecibida;
     }

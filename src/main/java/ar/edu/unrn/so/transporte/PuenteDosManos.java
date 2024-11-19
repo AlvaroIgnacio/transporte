@@ -9,7 +9,7 @@ package ar.edu.unrn.so.transporte;
 public class PuenteDosManos extends Puente {
 	private boolean cruzandoAlOeste = false;
 	private boolean cruzandoAlEste = false;
-	// Sincronización para el acceso al puente
+	// Un objeto de sincronización por cada mano del puente
 	private final Object lockAlOeste = new Object(); 
 	private final Object lockAlEste = new Object(); 
 
@@ -17,6 +17,7 @@ public class PuenteDosManos extends Puente {
 		super(nombre);
 	}
 
+	@Override
 	public void cruzar(Vehiculo vehiculo) throws InterruptedException {
 		if (vehiculo.haciaEste()) {
 			this.cruzarAlEste(vehiculo);
@@ -29,7 +30,7 @@ public class PuenteDosManos extends Puente {
 	Tiene dos carriles, por lo que solo un vehículo puede cruzar en un
 	sentido, en un momento dado.	 
 	*/
-	public void cruzarAlEste(Vehiculo vehiculo) throws InterruptedException {
+	private void cruzarAlEste(Vehiculo vehiculo) throws InterruptedException {
 		synchronized (lockAlEste) {
 			while (!estaLimpio || cruzandoAlEste) {
 				if (!estaLimpio) {
@@ -52,7 +53,7 @@ public class PuenteDosManos extends Puente {
 		}
 	}
 
-	public void cruzarAlOeste(Vehiculo vehiculo) throws InterruptedException {
+	private void cruzarAlOeste(Vehiculo vehiculo) throws InterruptedException {
 		synchronized (lockAlOeste) {
 			while (!estaLimpio || cruzandoAlOeste) {
 				if (!estaLimpio) {
@@ -74,6 +75,7 @@ public class PuenteDosManos extends Puente {
 		}
 	}
 
+	@Override
 	public void terminarLimpieza() {
 		synchronized (this) {
 			estaLimpio = true; 

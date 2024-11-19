@@ -7,6 +7,7 @@ package ar.edu.unrn.so.transporte;
  * @author Álvaro Bayón
  */
 public class PuenteManoUnica extends Puente {
+	// Sincronización para el acceso al puente
 	private final Object monitor = new Object();
 
 	public PuenteManoUnica(String nombre) {
@@ -18,6 +19,7 @@ public class PuenteManoUnica extends Puente {
 	 * carril, por lo que solo un vehículo puede cruzar por el en un momento dado,
 	 * sin importar el sentido.
 	 */
+	@Override
 	public void cruzar(Vehiculo vehiculo) throws InterruptedException {
 		synchronized (monitor) {
 			// Si el puente está siendo limpiado, los vehículos esperan
@@ -35,7 +37,7 @@ public class PuenteManoUnica extends Puente {
 		}
 	}
 
-
+	@Override
 	public void terminarLimpieza() {
 		synchronized (this) {
 			estaLimpio = true;			

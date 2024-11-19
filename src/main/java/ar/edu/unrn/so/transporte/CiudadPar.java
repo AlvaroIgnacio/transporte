@@ -26,6 +26,7 @@ class CiudadPar extends Ciudad {
         System.out.println("El vehículo " + vehiculo.nombre() + " descargó " + cantidadDescargada + " unidades en " + nombre());
     }
     
+    @Override
     public int mercaderiaRecibida() {
     	return mercaderiaRecibida.get();
     }

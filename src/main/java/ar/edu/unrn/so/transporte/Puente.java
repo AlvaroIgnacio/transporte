@@ -18,6 +18,7 @@ public abstract class Puente extends PuntoRuta {
 	// Inicia el proceso de limpieza indicando que el puente no está limpio
 	// para bloquear el acceso a los vehículos
 	public void iniciarLimpieza() {
+		// Sincronizo sobre this para evitar problemas con los vehículos
 		// El limpiador no debe esperar en la misma cola que los vehículos.
 		synchronized (this) {
 			// Bloqueamos el acceso a los vehículos
@@ -28,6 +29,7 @@ public abstract class Puente extends PuntoRuta {
 
 	public abstract void terminarLimpieza();
 
+	@Override
 	public void ingresar(Vehiculo vehiculo) {
 		try {
 			this.cruzar(vehiculo);
@@ -37,6 +39,7 @@ public abstract class Puente extends PuntoRuta {
 		}
 	}
 
+	@Override
 	protected int mercaderiaRecibida() {
 		return 0;
 	}	
