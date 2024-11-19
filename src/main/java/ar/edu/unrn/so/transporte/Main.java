@@ -1,6 +1,7 @@
 package ar.edu.unrn.so.transporte;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import sun.misc.Signal;
@@ -17,6 +18,7 @@ public class Main {
 	//Indica si se recibió un signal
 	public static final AtomicBoolean signalReceived = new AtomicBoolean(false);		
 
+	// Cantidad de vehículos en cada galpón
     private static final int NUM_VEHICULOS = 15;
     
     private static final Vehiculo[] vehiculos = new Vehiculo[NUM_VEHICULOS*2];
@@ -52,6 +54,7 @@ public class Main {
         // Para que un vehículo recorra la R2, debe atravezar C8, C7, P2, C6 y C5;
         var ruta2 = Arrays.asList(ciudad8, ciudad7, puente2, ciudad6, ciudad5);
         
+    	// Cuando inicia un nuevo día, la mitad de los vehículos se encuentran en un galpón
         for (int i = 0; i < NUM_VEHICULOS; i++) {
             vehiculos[i] = new Vehiculo(i + 1, ruta1, ruta2, galpon1, galpon2, true);
             // Iniciar el hilo (se debe modelar a los vehículos como hilos)
@@ -94,17 +97,23 @@ public class Main {
 
         Thread.sleep(5000);
         
-        for(PuntoRuta ciudad: ruta1) {
+        // Antes de terminar, debe imprimir la
+        // cantidad total de mercancias depositadas en cada una de las ciudades
+        imprimirMercanciasDepositadas(ruta1);
+        imprimirMercanciasDepositadas(ruta2);
+        
+        // Para depuración: muestra si la mercadería entregada fue descargada
+        //System.out.println("Entregada por G1: " + galpon1.mercaderiaEntregada());
+        //System.out.println("Entregada por G2: " + galpon2.mercaderiaEntregada());
+        
+    }
+    
+    private static void imprimirMercanciasDepositadas(List<PuntoRuta> ruta) {
+        for(PuntoRuta ciudad: ruta) {
         	if (ciudad.mercaderiaRecibida()>0)
         		System.out.println(ciudad.nombre() + " recibió: " + ciudad.mercaderiaRecibida());
-        }
-        for(PuntoRuta ciudad: ruta2) {
-        	if (ciudad.mercaderiaRecibida()>0)
-        		System.out.println("La ciudad " + ciudad.nombre() + " recibió: " + ciudad.mercaderiaRecibida());
-        }
-        
-        System.out.println("Entregada por G1: " + galpon1.mercaderiaEntregada());
-        System.out.println("Entregada por G2: " + galpon2.mercaderiaEntregada());
-        
-    }	
+        }    	
+    }
+    
+    
 }
