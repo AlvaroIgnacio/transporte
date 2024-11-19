@@ -19,7 +19,5 @@ public abstract class Ciudad extends PuntoRuta{
 
     public abstract void descargar(Vehiculo vehiculo);
 
-    public abstract int mercaderiaRecibida(); 
-
 }
 
